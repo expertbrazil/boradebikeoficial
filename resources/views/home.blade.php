@@ -72,7 +72,7 @@
         
         <!-- CTA Button -->
         <div class="mb-8">
-            <a href="#registration" class="bg-white text-blue-600 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-100 transition-colors inline-block">
+            <a href="{{ $registrationEnabled ? '#registration' : '#whatsapp' }}" class="bg-white text-blue-600 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-100 transition-colors inline-block">
                 Inscreva-se Agora
             </a>
         </div>
@@ -1367,11 +1367,7 @@ if (registrationForm) {
 }
 </script>
 @endpush
-@section('title', 'Bora de Bike - Portal Oficial')
-
-@section('content')
-<!-- Hero Section -->
-<section id="home" class="relative min-h-screen flex items-center justify-center text-white overflow-hidden">
+{{-- DUPLICATE BLOCK REMOVED
     @if($heroVideo)
         <!-- Video Background -->
         <video autoplay muted loop class="absolute inset-0 w-full h-full object-cover z-0">
@@ -2733,4 +2729,4 @@ if (registrationForm) {
     showStep(currentStep);
 }
 </script>
-@endpush
+--}}

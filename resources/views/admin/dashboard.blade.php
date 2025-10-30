@@ -101,30 +101,32 @@
         </div>
     </div>
     
-    <!-- Informações do Sistema -->
+    <!-- Aniversariantes do Mês -->
     <div class="bg-white rounded-lg shadow">
         <div class="p-6 border-b">
-            <h3 class="text-lg font-medium text-gray-900">Informações do Sistema</h3>
+            <h3 class="text-lg font-medium text-gray-900">Aniversariantes do mês</h3>
         </div>
         <div class="p-6">
-            <div class="space-y-4">
-                <div class="flex items-center justify-between">
-                    <span class="text-gray-600">Laravel Version</span>
-                    <span class="font-medium">{{ app()->version() }}</span>
-                </div>
-                <div class="flex items-center justify-between">
-                    <span class="text-gray-600">PHP Version</span>
-                    <span class="font-medium">{{ PHP_VERSION }}</span>
-                </div>
-                <div class="flex items-center justify-between">
-                    <span class="text-gray-600">Ambiente</span>
-                    <span class="font-medium">{{ app()->environment() }}</span>
-                </div>
-                <div class="flex items-center justify-between">
-                    <span class="text-gray-600">Último Login</span>
-                    <span class="font-medium">{{ auth()->user()->updated_at->format('d/m/Y H:i') }}</span>
-                </div>
-            </div>
+            @if($birthdays->count())
+            <ul class="divide-y">
+                @foreach($birthdays as $b)
+                <li class="py-3 flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-semibold">
+                            {{ Str::upper(Str::substr($b->full_name, 0, 1)) }}
+                        </div>
+                        <div>
+                            <p class="font-medium text-gray-900 leading-tight">{{ $b->full_name }}</p>
+                            <p class="text-sm text-gray-500">{{ \Carbon\Carbon::parse($b->birth_date)->format('d/m') }}</p>
+                        </div>
+                    </div>
+                    <i class="fas fa-birthday-cake text-pink-500"></i>
+                </li>
+                @endforeach
+            </ul>
+            @else
+            <p class="text-gray-500">Nenhum aniversariante este mês.</p>
+            @endif
         </div>
     </div>
 </div>
@@ -231,30 +233,32 @@
         </div>
     </div>
     
-    <!-- Informações do Sistema -->
+    <!-- Aniversariantes do Mês -->
     <div class="bg-white rounded-lg shadow">
         <div class="p-6 border-b">
-            <h3 class="text-lg font-medium text-gray-900">Informações do Sistema</h3>
+            <h3 class="text-lg font-medium text-gray-900">Aniversariantes do mês</h3>
         </div>
         <div class="p-6">
-            <div class="space-y-4">
-                <div class="flex items-center justify-between">
-                    <span class="text-gray-600">Laravel Version</span>
-                    <span class="font-medium">{{ app()->version() }}</span>
-                </div>
-                <div class="flex items-center justify-between">
-                    <span class="text-gray-600">PHP Version</span>
-                    <span class="font-medium">{{ PHP_VERSION }}</span>
-                </div>
-                <div class="flex items-center justify-between">
-                    <span class="text-gray-600">Ambiente</span>
-                    <span class="font-medium">{{ app()->environment() }}</span>
-                </div>
-                <div class="flex items-center justify-between">
-                    <span class="text-gray-600">Último Login</span>
-                    <span class="font-medium">{{ auth()->user()->updated_at->format('d/m/Y H:i') }}</span>
-                </div>
-            </div>
+            @if($birthdays->count())
+            <ul class="divide-y">
+                @foreach($birthdays as $b)
+                <li class="py-3 flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-semibold">
+                            {{ Str::upper(Str::substr($b->full_name, 0, 1)) }}
+                        </div>
+                        <div>
+                            <p class="font-medium text-gray-900 leading-tight">{{ $b->full_name }}</p>
+                            <p class="text-sm text-gray-500">{{ \Carbon\Carbon::parse($b->birth_date)->format('d/m') }}</p>
+                        </div>
+                    </div>
+                    <i class="fas fa-birthday-cake text-pink-500"></i>
+                </li>
+                @endforeach
+            </ul>
+            @else
+            <p class="text-gray-500">Nenhum aniversariante este mês.</p>
+            @endif
         </div>
     </div>
 </div>
