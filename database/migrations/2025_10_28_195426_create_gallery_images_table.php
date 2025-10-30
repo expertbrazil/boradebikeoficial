@@ -31,9 +31,3 @@ return new class extends Migration
         Schema::dropIfExists('gallery_images');
     }
 };
-
-    public function down(): void
-    {
-        Schema::dropIfExists('gallery_images');
-    }
-};

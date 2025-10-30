@@ -29,6 +29,3 @@ return new class extends Migration
         Schema::dropIfExists('site_settings');
     }
 };
-        Schema::dropIfExists('site_settings');
-    }
-};

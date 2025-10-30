@@ -30,8 +30,3 @@ return new class extends Migration
         Schema::dropIfExists('event_schedule');
     }
 };
-
-    {
-        Schema::dropIfExists('event_schedule');
-    }
-};

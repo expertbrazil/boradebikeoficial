@@ -40,21 +40,3 @@ return new class extends Migration
         });
     }
 };
-
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
-    {
-        Schema::table('registrations', function (Blueprint $table) {
-            // Remove o índice unique
-            $table->dropUnique(['cpf']);
-            
-            // Reverte o tamanho do campo para 14
-            $table->string('cpf', 14)->change();
-            
-            // Restaura o índice unique antigo
-            $table->unique('cpf');
-        });
-    }
-};

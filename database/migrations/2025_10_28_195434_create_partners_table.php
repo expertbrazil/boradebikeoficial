@@ -31,9 +31,3 @@ return new class extends Migration
         Schema::dropIfExists('partners');
     }
 };
-
-    public function down(): void
-    {
-        Schema::dropIfExists('partners');
-    }
-};

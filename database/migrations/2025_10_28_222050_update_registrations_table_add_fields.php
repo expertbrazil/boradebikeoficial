@@ -28,9 +28,3 @@ return new class extends Migration
         });
     }
 };
-
-        Schema::table('registrations', function (Blueprint $table) {
-            $table->dropColumn(['accepted_regulations', 'is_active']);
-        });
-    }
-};

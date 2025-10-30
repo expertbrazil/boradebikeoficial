@@ -28,5 +28,3 @@ return new class extends Migration
         \App\Models\SiteSetting::where('key', 'registration_enabled')->delete();
     }
 };
-
-};
