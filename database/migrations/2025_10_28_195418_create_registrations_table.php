@@ -41,19 +41,3 @@ return new class extends Migration
         Schema::dropIfExists('registrations');
     }
 };
-
-            $table->string('country')->default('Brasil');
-            $table->boolean('has_kit')->default(false);
-            $table->boolean('terms_accepted')->default(false);
-            $table->timestamps();
-        });
-    }
-
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
-    {
-        Schema::dropIfExists('registrations');
-    }
-};
