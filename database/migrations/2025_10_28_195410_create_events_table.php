@@ -39,17 +39,3 @@ return new class extends Migration
         Schema::dropIfExists('events');
     }
 };
-
-            $table->boolean('is_active')->default(true);
-            $table->timestamps();
-        });
-    }
-
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
-    {
-        Schema::dropIfExists('events');
-    }
-};
