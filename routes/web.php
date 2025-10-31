@@ -29,13 +29,13 @@ Route::prefix('admin')->middleware(['auth'])->name('admin.')->group(function () 
     Route::get('/registrations/{registration}', [App\Http\Controllers\AdminController::class, 'registrationShow'])->name('registrations.show');
     Route::get('/registrations/{registration}/pdf', [App\Http\Controllers\AdminController::class, 'registrationPdf'])->name('registrations.pdf');
     
-            // Gallery
-            Route::get('/gallery', [App\Http\Controllers\AdminController::class, 'gallery'])->name('gallery');
-            Route::get('/gallery/create', [App\Http\Controllers\AdminController::class, 'galleryCreate'])->name('gallery.create');
-            Route::post('/gallery', [App\Http\Controllers\AdminController::class, 'galleryStore'])->name('gallery.store');
-            Route::get('/gallery/{image}/edit', [App\Http\Controllers\AdminController::class, 'galleryEdit'])->name('gallery.edit');
-            Route::put('/gallery/{image}', [App\Http\Controllers\AdminController::class, 'galleryUpdate'])->name('gallery.update');
-            Route::delete('/gallery/{image}', [App\Http\Controllers\AdminController::class, 'galleryDestroy'])->name('gallery.destroy');
+    // Gallery
+    Route::get('/gallery', [App\Http\Controllers\AdminController::class, 'gallery'])->name('gallery');
+    Route::get('/gallery/create', [App\Http\Controllers\AdminController::class, 'galleryCreate'])->name('gallery.create');
+    Route::post('/gallery', [App\Http\Controllers\AdminController::class, 'galleryStore'])->name('gallery.store');
+    Route::get('/gallery/{image}/edit', [App\Http\Controllers\AdminController::class, 'galleryEdit'])->name('gallery.edit');
+    Route::put('/gallery/{image}', [App\Http\Controllers\AdminController::class, 'galleryUpdate'])->name('gallery.update');
+    Route::delete('/gallery/{image}', [App\Http\Controllers\AdminController::class, 'galleryDestroy'])->name('gallery.destroy');
     
     // Partners
     Route::get('/partners', [App\Http\Controllers\AdminController::class, 'partners'])->name('partners');
@@ -48,17 +48,17 @@ Route::prefix('admin')->middleware(['auth'])->name('admin.')->group(function () 
     // Users
     Route::get('/users', [App\Http\Controllers\AdminController::class, 'users'])->name('users');
     
-            // Settings
-            Route::get('/settings', [App\Http\Controllers\AdminController::class, 'settings'])->name('settings');
-            Route::post('/settings', [App\Http\Controllers\AdminController::class, 'settingsUpdate'])->name('settings.update');
-            
-            // Schedule
-            Route::get('/schedule', [App\Http\Controllers\AdminController::class, 'schedule'])->name('schedule');
-            Route::get('/schedule/create', [App\Http\Controllers\AdminController::class, 'scheduleCreate'])->name('schedule.create');
-            Route::post('/schedule', [App\Http\Controllers\AdminController::class, 'scheduleStore'])->name('schedule.store');
-            Route::get('/schedule/{scheduleItem}/edit', [App\Http\Controllers\AdminController::class, 'scheduleEdit'])->name('schedule.edit');
-            Route::put('/schedule/{scheduleItem}', [App\Http\Controllers\AdminController::class, 'scheduleUpdate'])->name('schedule.update');
-            Route::delete('/schedule/{scheduleItem}', [App\Http\Controllers\AdminController::class, 'scheduleDestroy'])->name('schedule.destroy');
+    // Settings
+    Route::get('/settings', [App\Http\Controllers\AdminController::class, 'settings'])->name('settings');
+    Route::post('/settings', [App\Http\Controllers\AdminController::class, 'settingsUpdate'])->name('settings.update');
+    
+    // Schedule
+    Route::get('/schedule', [App\Http\Controllers\AdminController::class, 'schedule'])->name('schedule');
+    Route::get('/schedule/create', [App\Http\Controllers\AdminController::class, 'scheduleCreate'])->name('schedule.create');
+    Route::post('/schedule', [App\Http\Controllers\AdminController::class, 'scheduleStore'])->name('schedule.store');
+    Route::get('/schedule/{scheduleItem}/edit', [App\Http\Controllers\AdminController::class, 'scheduleEdit'])->name('schedule.edit');
+    Route::put('/schedule/{scheduleItem}', [App\Http\Controllers\AdminController::class, 'scheduleUpdate'])->name('schedule.update');
+    Route::delete('/schedule/{scheduleItem}', [App\Http\Controllers\AdminController::class, 'scheduleDestroy'])->name('schedule.destroy');
 
     // WhatsApp Groups
     Route::get('/whatsapp', [App\Http\Controllers\AdminController::class, 'whatsappGroups'])->name('whatsapp.index');
