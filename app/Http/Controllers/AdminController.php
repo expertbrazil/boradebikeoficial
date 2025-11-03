@@ -404,15 +404,17 @@ class AdminController extends Controller
             $message = 'Data de encerramento das inscrições atualizada com sucesso!';
         }
         // Toggle de habilitação das inscrições
-        // O campo hidden sempre envia o valor (0 ou 1), mesmo quando o checkbox está desmarcado
-        // Verifica se a chave existe no request (incluindo quando o valor é "0")
-        if (array_key_exists('registration_enabled', $request->all())) {
+        // O campo hidden envia 'true' ou 'false'; garantir conversão correta e robusta
+        if ($request->has('registration_enabled')) {
             $enabledValue = $request->input('registration_enabled');
-            
-            // Converte para boolean - qualquer valor que não seja "0" ou 0 é considerado true
-            $enabled = !($enabledValue === '0' || $enabledValue === 0 || $enabledValue === false || $enabledValue === null);
-            
-            // Sempre atualiza quando o campo é enviado
+
+            // Converte strings 'true'/'false', '1'/'0', 'on'/'off' corretamente
+            $enabled = filter_var($enabledValue, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+            // Se não conseguiu inferir (null), cair para checagem legacy de '0'/'1'
+            if ($enabled === null) {
+                $enabled = !($enabledValue === '0' || $enabledValue === 0 || $enabledValue === false || $enabledValue === null);
+            }
+
             SiteSetting::set('registration_enabled', $enabled ? 'true' : 'false', 'boolean', 'Habilitar/desabilitar formulário de inscrições');
             $hasChanges = true;
             $action = 'registration_toggle';

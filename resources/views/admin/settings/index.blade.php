@@ -172,12 +172,12 @@
                         </div>
                         <div class="flex items-center">
                             <label class="relative inline-flex items-center cursor-pointer">
-                                <input type="hidden" name="registration_enabled" value="{{ $registrationEnabled ? '1' : '0' }}" id="registration_enabled_hidden">
+                                <input type="hidden" name="registration_enabled" value="{{ $registrationEnabled ? 'true' : 'false' }}" id="registration_enabled_hidden">
                                 <input type="checkbox" 
                                        id="registration_enabled_checkbox"
                                        {{ $registrationEnabled ? 'checked' : '' }}
                                        class="sr-only peer"
-                                       onchange="document.getElementById('registration_enabled_hidden').value = this.checked ? '1' : '0';">
+                                       onchange="document.getElementById('registration_enabled_hidden').value = this.checked ? 'true' : 'false';">
                                 <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
                                 <span class="ml-3 text-sm font-medium text-gray-900">
                                     {{ $registrationEnabled ? 'Habilitado' : 'Desabilitado' }}
@@ -352,13 +352,11 @@ document.getElementById('settingsForm').addEventListener('submit', function(e) {
     const checkbox = document.getElementById('registration_enabled_checkbox');
     const hidden = document.getElementById('registration_enabled_hidden');
     if (checkbox && hidden) {
-        hidden.value = checkbox.checked ? '1' : '0';
+        hidden.value = checkbox.checked ? 'true' : 'false';
     }
 });
 </script>
 @endsection
-
-@section('title', 'Configurações - Admin')
 @section('page-title', 'Configurações do Site')
 
 @section('content')
@@ -530,12 +528,12 @@ document.getElementById('settingsForm').addEventListener('submit', function(e) {
                         </div>
                         <div class="flex items-center">
                             <label class="relative inline-flex items-center cursor-pointer">
-                                <input type="hidden" name="registration_enabled" value="{{ $registrationEnabled ? '1' : '0' }}" id="registration_enabled_hidden">
+                                <input type="hidden" name="registration_enabled" value="{{ $registrationEnabled ? 'true' : 'false' }}" id="registration_enabled_hidden">
                                 <input type="checkbox" 
                                        id="registration_enabled_checkbox"
                                        {{ $registrationEnabled ? 'checked' : '' }}
                                        class="sr-only peer"
-                                       onchange="document.getElementById('registration_enabled_hidden').value = this.checked ? '1' : '0';">
+                                       onchange="document.getElementById('registration_enabled_hidden').value = this.checked ? 'true' : 'false';">
                                 <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
                                 <span class="ml-3 text-sm font-medium text-gray-900">
                                     {{ $registrationEnabled ? 'Habilitado' : 'Desabilitado' }}
