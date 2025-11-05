@@ -23,10 +23,30 @@ class HomeController extends Controller
         $registrationDeadline = SiteSetting::get('registration_deadline');
         $kitPhoto = SiteSetting::get('kit_photo');
         $kmlRouteFile = SiteSetting::get('kml_route_file');
+        $kmlRouteCode = SiteSetting::get('kml_route_code');
         $registrationEnabledValue = SiteSetting::get('registration_enabled', 'true');
         // Converte string 'true'/'false' para boolean
         $registrationEnabled = filter_var($registrationEnabledValue, FILTER_VALIDATE_BOOLEAN);
 
-        return view('home', compact('event', 'galleryImages', 'partners', 'scheduleItems', 'heroVideo', 'siteLogo', 'registrationDeadline', 'kitPhoto', 'kmlRouteFile', 'registrationEnabled', 'whatsappGroups'));
+        return view('home', compact('event', 'galleryImages', 'partners', 'scheduleItems', 'heroVideo', 'siteLogo', 'registrationDeadline', 'kitPhoto', 'kmlRouteFile', 'kmlRouteCode', 'registrationEnabled', 'whatsappGroups'));
+    }
+
+    public function routeKml()
+    {
+        $kmlRouteCode = SiteSetting::get('kml_route_code');
+        $kmlRouteFile = SiteSetting::get('kml_route_file');
+        
+        if (!empty($kmlRouteCode)) {
+            return response($kmlRouteCode, 200)
+                ->header('Content-Type', 'application/vnd.google-earth.kml+xml')
+                ->header('Content-Disposition', 'inline; filename="route.kml"');
+        } elseif (!empty($kmlRouteFile) && file_exists(storage_path('app/public/' . $kmlRouteFile))) {
+            return response()->file(storage_path('app/public/' . $kmlRouteFile), [
+                'Content-Type' => 'application/vnd.google-earth.kml+xml',
+                'Content-Disposition' => 'inline; filename="route.kml"'
+            ]);
+        }
+        
+        abort(404);
     }
 }

@@ -308,8 +308,19 @@
 <!-- Route Section -->
 @php
     $kmlRouteFile = $kmlRouteFile ?? \App\Models\SiteSetting::get('kml_route_file');
+    $kmlRouteCode = $kmlRouteCode ?? \App\Models\SiteSetting::get('kml_route_code');
+    $hasRoute = !empty($kmlRouteFile) || !empty($kmlRouteCode);
+    
+    // URL do KML para o mapa (sempre usa a rota pública)
+    $kmlUrl = null;
+    if ($hasRoute) {
+        $kmlUrl = route('route.kml');
+    }
+    
+    // URL para download/abrir em nova aba
+    $kmlDownloadUrl = route('route.kml');
 @endphp
-@if(!empty($kmlRouteFile))
+@if($hasRoute)
 <section id="route" class="py-20 bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-16">
@@ -323,15 +334,27 @@
         <div class="max-w-7xl mx-auto">
             <!-- Google Maps com KML -->
             <div class="bg-white rounded-xl shadow-2xl overflow-hidden border-4 border-blue-100">
-                <div class="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-4">
+                <div class="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-4 flex items-center justify-between">
                     <div class="flex items-center space-x-3">
                         <i class="fas fa-map-marked-alt text-white text-2xl"></i>
                         <h3 class="text-xl font-bold text-white">Visualização do Trajeto no Mapa</h3>
                     </div>
+                    @if($kmlDownloadUrl)
+                    <a href="{{ $kmlDownloadUrl }}" target="_blank" download="route.kml"
+                       class="flex items-center px-4 py-2 bg-white text-blue-600 rounded-lg font-semibold hover:bg-blue-50 transition-colors text-sm">
+                        <i class="fas fa-external-link-alt mr-2"></i>
+                        Abrir em Nova Aba
+                    </a>
+                    @endif
                 </div>
                 
                 <!-- Mapa do Google Maps -->
                 <div id="route-map" style="height: 600px; width: 100%;"></div>
+                <div id="map-error" class="hidden p-8 text-center bg-yellow-50 border-t border-yellow-200">
+                    <i class="fas fa-exclamation-triangle text-4xl text-yellow-600 mb-4"></i>
+                    <p class="text-gray-700 font-semibold mb-2">Erro ao carregar o mapa</p>
+                    <p class="text-sm text-gray-600 mb-4">Use o botão "Abrir em Nova Aba" acima para visualizar o trajeto</p>
+                </div>
             </div>
             
             <!-- Informações adicionais -->
@@ -356,43 +379,112 @@
     </div>
 </section>
 
-<script src="https://maps.googleapis.com/maps/api/js?key=&libraries=geometry"></script>
+<!-- Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const kmlUrl = '{{ asset("storage/" . $kmlRouteFile) }}';
-    
-    // Inicializar o mapa
-    const map = new google.maps.Map(document.getElementById('route-map'), {
-        zoom: 13,
-        center: { lat: -22.87543628084828, lng: -42.03823334145731 }, // Coordenadas do KML
-        mapTypeId: 'terrain',
-        styles: [
-            {
-                featureType: 'poi',
-                elementType: 'labels',
-                stylers: [{ visibility: 'off' }]
-            }
-        ]
-    });
-    
-    // Carregar o KML
-    const kmlLayer = new google.maps.KmlLayer({
-        url: kmlUrl,
-        map: map,
-        suppressInfoWindows: false,
-        preserveViewport: false
-    });
-    
-    // Ajustar o zoom para mostrar todo o trajeto quando o KML carregar
-    kmlLayer.addListener('status_changed', function() {
-        if (kmlLayer.getStatus() === 'OK') {
-            // Ajustar o zoom para mostrar todo o conteúdo
-            const bounds = new google.maps.LatLngBounds();
-            // Tentar obter os limites do KML (pode não funcionar diretamente)
-            // Por enquanto, manter as coordenadas do centro
+    try {
+        const kmlUrl = @json($kmlUrl);
+        
+        if (!kmlUrl) {
+            showMapError();
+            return;
         }
-    });
+        
+        // Coordenadas do centro (extraídas do KML)
+        const center = { lat: -22.87543628084828, lng: -42.03823334145731 };
+        
+        // Inicializar o mapa Leaflet
+        const map = L.map('route-map').setView([center.lat, center.lng], 13);
+        
+        // Adicionar tiles do OpenStreetMap (gratuito, sem API key)
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+            maxZoom: 19
+        }).addTo(map);
+        
+        // Carregar o KML
+        fetch(kmlUrl)
+            .then(response => response.text())
+            .then(kmlText => {
+                // Criar um parser para o KML
+                const parser = new DOMParser();
+                const kml = parser.parseFromString(kmlText, 'text/xml');
+                
+                // Extrair coordenadas e criar marcadores/linhas
+                const placemarks = kml.querySelectorAll('Placemark');
+                
+                placemarks.forEach(placemark => {
+                    const name = placemark.querySelector('name')?.textContent || 'Trajeto';
+                    const point = placemark.querySelector('Point');
+                    const lineString = placemark.querySelector('LineString');
+                    
+                    if (point) {
+                        const coords = point.querySelector('coordinates')?.textContent.trim();
+                        if (coords) {
+                            const [lng, lat, alt] = coords.split(',').map(Number);
+                            L.marker([lat, lng])
+                                .addTo(map)
+                                .bindPopup(name);
+                        }
+                    }
+                    
+                    if (lineString) {
+                        const coords = lineString.querySelector('coordinates')?.textContent.trim();
+                        if (coords) {
+                            const points = coords.split(/\s+/).map(coord => {
+                                const [lng, lat, alt] = coord.split(',').map(Number);
+                                return [lat, lng];
+                            }).filter(p => !isNaN(p[0]) && !isNaN(p[1]));
+                            
+                            if (points.length > 0) {
+                                // Criar linha do trajeto
+                                const polyline = L.polyline(points, {
+                                    color: '#2dc0fb',
+                                    weight: 4,
+                                    opacity: 0.8
+                                }).addTo(map);
+                                
+                                // Ajustar o mapa para mostrar todo o trajeto
+                                map.fitBounds(polyline.getBounds(), { padding: [50, 50] });
+                            }
+                        }
+                    }
+                });
+                
+                // Se não encontrou LineString, ajustar zoom para o marcador
+                if (placemarks.length > 0 && !placemarks[0].querySelector('LineString')) {
+                    const point = placemarks[0].querySelector('Point');
+                    if (point) {
+                        const coords = point.querySelector('coordinates')?.textContent.trim();
+                        if (coords) {
+                            const [lng, lat] = coords.split(',').map(Number);
+                            map.setView([lat, lng], 15);
+                        }
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Erro ao carregar KML:', error);
+                showMapError();
+            });
+        
+    } catch (error) {
+        console.error('Erro ao inicializar o mapa:', error);
+        showMapError();
+    }
 });
+
+function showMapError() {
+    const mapElement = document.getElementById('route-map');
+    const errorElement = document.getElementById('map-error');
+    if (mapElement && errorElement) {
+        mapElement.style.display = 'none';
+        errorElement.classList.remove('hidden');
+    }
+}
 </script>
 @endif
 

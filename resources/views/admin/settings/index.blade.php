@@ -213,7 +213,20 @@
                     
                     @php
                         $currentKmlFile = App\Models\SiteSetting::get('kml_route_file');
+                        $currentKmlCode = App\Models\SiteSetting::get('kml_route_code');
                     @endphp
+                    
+                    @if($currentKmlCode)
+                        <div class="mb-4 p-4 bg-green-50 rounded-lg border border-green-200">
+                            <p class="text-sm text-green-800 font-semibold mb-2">
+                                <i class="fas fa-code mr-2"></i>
+                                Código KML está configurado
+                            </p>
+                            <p class="text-xs text-green-700">
+                                O trajeto está sendo exibido usando o código KML fornecido. Você pode substituí-lo pelo código abaixo ou fazer upload de um arquivo.
+                            </p>
+                        </div>
+                    @endif
                     
                     @if($currentKmlFile)
                         <div class="mb-4">
@@ -255,17 +268,32 @@
                         @enderror
                     </div>
                     
+                    <div class="mt-6 pt-6 border-t border-gray-200">
+                        <label for="kml_route_code" class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-code mr-2 text-green-600"></i>
+                            Ou cole o código KML diretamente
+                        </label>
+                        <textarea id="kml_route_code" name="kml_route_code" rows="10"
+                                  placeholder="Cole aqui o código XML do KML..."
+                                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 font-mono text-xs">{{ $currentKmlCode }}</textarea>
+                        <p class="mt-1 text-sm text-gray-500">
+                            Cole o código XML completo do KML aqui. Isso substituirá qualquer arquivo KML enviado anteriormente.
+                        </p>
+                        @error('kml_route_code')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+                    
                     <div class="mt-4 p-4 bg-blue-50 rounded-lg">
                         <h5 class="text-sm font-medium text-blue-900 mb-2">
                             <i class="fas fa-info-circle mr-1"></i>
                             Como obter o arquivo KML:
                         </h5>
                         <ul class="text-sm text-blue-800 space-y-1">
-                            <li>• Crie ou abra seu projeto no Google Earth</li>
-                            <li>• Clique em "Exportar" ou "Export" e escolha "KML" ou "KMZ"</li>
-                            <li>• Salve o arquivo no seu computador</li>
-                            <li>• Faça upload do arquivo aqui</li>
-                            <li>• O trajeto será exibido automaticamente no site</li>
+                            <li>• <strong>Opção 1 - Arquivo:</strong> Exporte do Google Earth como KML/KMZ e faça upload</li>
+                            <li>• <strong>Opção 2 - Código:</strong> Copie o código XML do KML e cole no campo acima</li>
+                            <li>• O trajeto será exibido automaticamente no site usando Google Maps</li>
+                            <li>• <strong>Nota:</strong> Apenas uma opção será usada (arquivo ou código). A última salva tem prioridade.</li>
                         </ul>
                     </div>
                 </div>

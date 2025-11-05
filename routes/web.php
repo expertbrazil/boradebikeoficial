@@ -6,6 +6,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/route.kml', [HomeController::class, 'routeKml'])->name('route.kml');
 Route::post('/registration', [RegistrationController::class, 'store'])->name('registration.store');
 Route::post('/check-cpf', [RegistrationController::class, 'checkCpf'])->name('registration.check-cpf');
 
