@@ -22,10 +22,11 @@ class HomeController extends Controller
         $siteLogo = SiteSetting::get('site_logo');
         $registrationDeadline = SiteSetting::get('registration_deadline');
         $kitPhoto = SiteSetting::get('kit_photo');
+        $kmlRouteFile = SiteSetting::get('kml_route_file');
         $registrationEnabledValue = SiteSetting::get('registration_enabled', 'true');
         // Converte string 'true'/'false' para boolean
         $registrationEnabled = filter_var($registrationEnabledValue, FILTER_VALIDATE_BOOLEAN);
 
-        return view('home', compact('event', 'galleryImages', 'partners', 'scheduleItems', 'heroVideo', 'siteLogo', 'registrationDeadline', 'kitPhoto', 'registrationEnabled', 'whatsappGroups'));
+        return view('home', compact('event', 'galleryImages', 'partners', 'scheduleItems', 'heroVideo', 'siteLogo', 'registrationDeadline', 'kitPhoto', 'kmlRouteFile', 'registrationEnabled', 'whatsappGroups'));
     }
 }

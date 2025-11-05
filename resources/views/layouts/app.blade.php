@@ -166,6 +166,12 @@
                     <a href="#about" class="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium transition-colors">Sobre</a>
                     <a href="#kit" class="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium transition-colors">Kit</a>
                     <a href="#schedule" class="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium transition-colors">Programação</a>
+                    @php
+                        $hasRoute = !empty(\App\Models\SiteSetting::get('kml_route_file'));
+                    @endphp
+                    @if($hasRoute)
+                    <a href="#route" class="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium transition-colors">Trajeto</a>
+                    @endif
                     <a href="#gallery" class="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium transition-colors">Galeria</a>
                     <a href="#partners" class="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium transition-colors">Parceiros</a>
                 </nav>
@@ -195,6 +201,9 @@
                 <a href="#about" class="text-gray-700 hover:text-blue-600 block px-3 py-2 text-base font-medium">Sobre</a>
                 <a href="#kit" class="text-gray-700 hover:text-blue-600 block px-3 py-2 text-base font-medium">Kit</a>
                 <a href="#schedule" class="text-gray-700 hover:text-blue-600 block px-3 py-2 text-base font-medium">Programação</a>
+                @if($hasRoute)
+                <a href="#route" class="text-gray-700 hover:text-blue-600 block px-3 py-2 text-base font-medium">Trajeto</a>
+                @endif
                 <a href="#gallery" class="text-gray-700 hover:text-blue-600 block px-3 py-2 text-base font-medium">Galeria</a>
                 <a href="#partners" class="text-gray-700 hover:text-blue-600 block px-3 py-2 text-base font-medium">Parceiros</a>
             </div>

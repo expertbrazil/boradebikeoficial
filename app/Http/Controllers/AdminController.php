@@ -345,6 +345,8 @@ class AdminController extends Controller
             'kit_photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:51200', // 50MB max
             'registration_deadline' => 'nullable|date|after:today',
             'registration_enabled' => 'nullable|boolean',
+            'kml_route_file' => 'nullable|file|mimetypes:application/vnd.google-earth.kml+xml,application/vnd.google-earth.kmz,application/xml,application/zip,text/xml|max:10240', // 10MB max
+            'delete_kml_file' => 'nullable|string',
         ]);
 
         $action = '';
@@ -419,6 +421,39 @@ class AdminController extends Controller
             $hasChanges = true;
             $action = 'registration_toggle';
             $message = $enabled ? 'Inscrições habilitadas com sucesso!' : 'Inscrições desabilitadas com sucesso!';
+        }
+        // Exclusão do arquivo KML
+        if ($request->filled('delete_kml_file')) {
+            $kmlFile = SiteSetting::get('kml_route_file');
+            if ($kmlFile && file_exists(storage_path('app/public/' . $kmlFile))) {
+                unlink(storage_path('app/public/' . $kmlFile));
+            }
+            SiteSetting::where('key', 'kml_route_file')->delete();
+            $hasChanges = true;
+            $action = 'kml_deleted';
+            $message = 'Arquivo KML removido com sucesso!';
+        }
+        // Upload do arquivo KML
+        if ($request->hasFile('kml_route_file')) {
+            $file = $request->file('kml_route_file');
+            $extension = strtolower($file->getClientOriginalExtension());
+            
+            // Validar extensão do arquivo
+            if (!in_array($extension, ['kml', 'kmz'])) {
+                return redirect()->route('admin.settings')->with('error', 'O arquivo deve ter extensão .kml ou .kmz');
+            }
+            
+            // Deletar arquivo KML antigo se existir
+            $oldKmlFile = SiteSetting::get('kml_route_file');
+            if ($oldKmlFile && file_exists(storage_path('app/public/' . $oldKmlFile))) {
+                unlink(storage_path('app/public/' . $oldKmlFile));
+            }
+            
+            $kmlPath = $file->store('routes', 'public');
+            SiteSetting::set('kml_route_file', $kmlPath, 'file', 'Arquivo KML do trajeto do evento');
+            $hasChanges = true;
+            $action = 'kml_uploaded';
+            $message = 'Arquivo KML enviado com sucesso!';
         }
 
         if ($hasChanges) {
