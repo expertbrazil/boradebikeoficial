@@ -36,6 +36,11 @@
                     <i class="fas fa-users mr-3"></i>
                     Inscrições
                 </a>
+
+                <a href="{{ route('admin.kits.index') }}" class="flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100 {{ request()->routeIs('admin.kits*') ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-700' : '' }}">
+                    <i class="fas fa-box-open mr-3"></i>
+                    Entrega de Kits
+                </a>
                 
                 <a href="{{ route('admin.gallery') }}" class="flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100 {{ request()->routeIs('admin.gallery*') ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-700' : '' }}">
                     <i class="fas fa-images mr-3"></i>

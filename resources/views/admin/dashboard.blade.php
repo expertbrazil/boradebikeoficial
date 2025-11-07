@@ -199,4 +199,41 @@
         </div>
     </div>
 </div>
+
+<!-- Alimentos arrecadados por Cidade -->
+<div class="mt-6 bg-white rounded-lg shadow">
+    <div class="p-6 border-b">
+        <h3 class="text-lg font-medium text-gray-900">Alimentos arrecadados por Cidade</h3>
+        <p class="text-sm text-gray-500">Somatório de kg e litros informados na entrega dos kits.</p>
+    </div>
+    <div class="p-6">
+        @if($foodByCity->count())
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cidade/UF</th>
+                        <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Kg</th>
+                        <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Litros</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    @foreach($foodByCity as $city)
+                    <tr>
+                        <td class="px-4 py-3 text-sm text-gray-900">
+                            <div class="font-semibold">{{ $city->city ?? 'Não informado' }}</div>
+                            <div class="text-xs text-gray-500">{{ $city->state ?? 'UF não informada' }}</div>
+                        </td>
+                        <td class="px-4 py-3 text-right text-sm text-gray-900">{{ number_format($city->total_kg ?? 0, 2, ',', '.') }} kg</td>
+                        <td class="px-4 py-3 text-right text-sm text-gray-900">{{ number_format($city->total_liters ?? 0, 2, ',', '.') }} L</td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+        @else
+        <p class="text-gray-500">Nenhuma entrega de kit registrada até o momento.</p>
+        @endif
+    </div>
+</div>
 @endsection

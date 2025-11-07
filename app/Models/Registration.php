@@ -29,6 +29,9 @@ class Registration extends Model
         'terms_accepted',
         'accepted_regulations',
         'is_active',
+        'kit_delivered_at',
+        'food_kg',
+        'food_liters',
     ];
 
     protected $casts = [
@@ -37,6 +40,9 @@ class Registration extends Model
         'terms_accepted' => 'boolean',
         'accepted_regulations' => 'boolean',
         'is_active' => 'boolean',
+        'kit_delivered_at' => 'datetime',
+        'food_kg' => 'decimal:2',
+        'food_liters' => 'decimal:2',
     ];
 
     public function event()

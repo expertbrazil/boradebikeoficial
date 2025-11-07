@@ -62,6 +62,20 @@ class AdminController extends Controller
             ->take(10)
             ->get();
 
+        $foodByCity = Registration::select(
+                'city',
+                'state',
+                DB::raw('SUM(food_kg) as total_kg'),
+                DB::raw('SUM(food_liters) as total_liters')
+            )
+            ->whereNotNull('kit_delivered_at')
+            ->whereNotNull('city')
+            ->where('city', '!=', '')
+            ->groupBy('city', 'state')
+            ->orderByDesc(DB::raw('SUM(food_kg) + SUM(food_liters)'))
+            ->take(10)
+            ->get();
+
         // Aniversariantes do mês (com base em registrations.birth_date)
         $birthdays = Registration::select('full_name', 'birth_date')
             ->whereMonth('birth_date', now()->month)
@@ -69,14 +83,68 @@ class AdminController extends Controller
             ->take(15)
             ->get();
 
-        return view('admin.dashboard', compact('stats', 'birthdays', 'registrationsByState', 'registrationsByCity'));
+        return view('admin.dashboard', compact('stats', 'birthdays', 'registrationsByState', 'registrationsByCity', 'foodByCity'));
     }
 
 
-    public function registrations()
+    public function registrations(Request $request)
     {
-        $registrations = Registration::with('event')->orderBy('created_at', 'desc')->paginate(15);
-        return view('admin.registrations.index', compact('registrations'));
+        $query = Registration::with('event');
+
+        $this->applyRegistrationFilters($query, $request);
+
+        $registrations = (clone $query)
+            ->orderBy('created_at', 'desc')
+            ->paginate(15)
+            ->appends($request->query());
+
+        $totalRegistrations = $registrations->total();
+        $withKitCount = (clone $query)->where('has_kit', true)->count();
+        $withoutKitCount = (clone $query)->where('has_kit', false)->count();
+
+        $filters = $request->only(['name', 'cpf', 'city', 'state']);
+
+        return view('admin.registrations.index', compact('registrations', 'filters', 'totalRegistrations', 'withKitCount', 'withoutKitCount'));
+    }
+
+    public function registrationsExport(Request $request)
+    {
+        $query = Registration::with('event')->orderBy('created_at', 'asc');
+        $this->applyRegistrationFilters($query, $request);
+
+        $registrations = $query->get();
+
+        $filename = 'inscricoes-' . now()->format('Ymd-His') . '.xls';
+        $content = view('admin.registrations.export', compact('registrations'))->render();
+
+        return response($content, 200, [
+            'Content-Type' => 'application/vnd.ms-excel; charset=UTF-8',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+            'Cache-Control' => 'max-age=0, no-cache, must-revalidate, proxy-revalidate',
+        ]);
+    }
+
+    protected function applyRegistrationFilters($query, Request $request): void
+    {
+        if ($request->filled('name')) {
+            $query->where('full_name', 'like', '%' . $request->input('name') . '%');
+        }
+
+        if ($request->filled('cpf')) {
+            $cpf = preg_replace('/[^0-9]/', '', $request->input('cpf'));
+            if (!empty($cpf)) {
+                $query->where('cpf', 'like', $cpf . '%');
+            }
+        }
+
+        if ($request->filled('city')) {
+            $query->where('city', 'like', '%' . $request->input('city') . '%');
+        }
+
+        if ($request->filled('state')) {
+            $state = strtoupper($request->input('state'));
+            $query->where('state', 'like', $state . '%');
+        }
     }
 
     public function registrationShow(Registration $registration)

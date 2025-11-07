@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\KitDeliveryController;
 use App\Http\Controllers\RegistrationController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -27,8 +28,13 @@ Route::prefix('admin')->middleware(['auth'])->name('admin.')->group(function () 
     
     // Registrations
     Route::get('/registrations', [App\Http\Controllers\AdminController::class, 'registrations'])->name('registrations');
+    Route::get('/registrations/export', [App\Http\Controllers\AdminController::class, 'registrationsExport'])->name('registrations.export');
     Route::get('/registrations/{registration}', [App\Http\Controllers\AdminController::class, 'registrationShow'])->name('registrations.show');
     Route::get('/registrations/{registration}/pdf', [App\Http\Controllers\AdminController::class, 'registrationPdf'])->name('registrations.pdf');
+
+    // Kit Delivery
+    Route::get('/kits', [KitDeliveryController::class, 'index'])->name('kits.index');
+    Route::post('/kits/{registration}/deliver', [KitDeliveryController::class, 'deliver'])->name('kits.deliver');
     
     // Gallery
     Route::get('/gallery', [App\Http\Controllers\AdminController::class, 'gallery'])->name('gallery');
