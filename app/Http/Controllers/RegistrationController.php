@@ -134,6 +134,8 @@ class RegistrationController extends Controller
 
             // Send confirmation email
             try {
+                $this->configureSmtpMailer();
+
                 Mail::send('emails.registration-confirmation', [
                     'registration' => $registration,
                     'event' => $event,
@@ -178,6 +180,51 @@ class RegistrationController extends Controller
                 'message' => 'Ocorreu um erro inesperado. Por favor, tente novamente.',
                 'error' => config('app.debug') ? $e->getMessage() : null
             ], 500);
+        }
+    }
+
+    protected function configureSmtpMailer(): void
+    {
+        $mailerConfig = config('mail.mailers.smtp', []);
+
+        $host = SiteSetting::get('smtp_host');
+        if (!empty($host)) {
+            $mailerConfig['host'] = $host;
+        }
+
+        $port = SiteSetting::get('smtp_port');
+        if ($port !== null && $port !== '') {
+            $mailerConfig['port'] = (int) $port;
+        }
+
+        $username = SiteSetting::get('smtp_username');
+        if ($username !== null && $username !== '') {
+            $mailerConfig['username'] = $username;
+        }
+
+        $password = SiteSetting::get('smtp_password');
+        if ($password !== null && $password !== '') {
+            $mailerConfig['password'] = $password;
+        }
+
+        $encryption = SiteSetting::get('smtp_encryption');
+        if ($encryption !== null && $encryption !== '') {
+            $mailerConfig['encryption'] = $encryption === 'none' ? null : $encryption;
+        }
+
+        config([
+            'mail.default' => 'smtp',
+            'mail.mailers.smtp' => $mailerConfig,
+        ]);
+
+        $fromAddress = SiteSetting::get('smtp_from_address');
+        $fromName = SiteSetting::get('smtp_from_name');
+
+        if ($fromAddress) {
+            config(['mail.from.address' => $fromAddress]);
+        }
+        if ($fromName) {
+            config(['mail.from.name' => $fromName]);
         }
     }
 

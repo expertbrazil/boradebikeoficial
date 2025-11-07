@@ -13,6 +13,7 @@ use App\Models\WhatsAppGroup;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
 class AdminController extends Controller
@@ -493,6 +494,141 @@ class AdminController extends Controller
         }
 
         return redirect()->route('admin.settings')->with('error', 'Nenhuma ação foi realizada.');
+    }
+
+    public function parameters()
+    {
+        return view('admin.parameters.index');
+    }
+
+    public function parametersUpdate(Request $request)
+    {
+        $request->validate([
+            'smtp_host' => 'nullable|string|max:255',
+            'smtp_port' => 'nullable|integer|min:1|max:65535',
+            'smtp_username' => 'nullable|string|max:255',
+            'smtp_password' => 'nullable|string|max:255',
+            'smtp_encryption' => 'nullable|in:none,ssl,tls,starttls',
+            'smtp_from_address' => 'nullable|email|max:255',
+            'smtp_from_name' => 'nullable|string|max:255',
+        ]);
+
+        $hasChanges = false;
+        $message = 'Nenhuma alteração realizada.';
+
+        $smtpStringFields = [
+            'smtp_host' => ['type' => 'text', 'description' => 'Servidor SMTP'],
+            'smtp_username' => ['type' => 'text', 'description' => 'Usuário SMTP'],
+            'smtp_encryption' => ['type' => 'text', 'description' => 'Criptografia SMTP'],
+            'smtp_from_address' => ['type' => 'email', 'description' => 'E-mail remetente padrão'],
+            'smtp_from_name' => ['type' => 'text', 'description' => 'Nome do remetente padrão'],
+        ];
+
+        foreach ($smtpStringFields as $key => $meta) {
+            if ($request->exists($key)) {
+                $value = trim((string) $request->input($key, ''));
+                if ($value === '') {
+                    SiteSetting::where('key', $key)->delete();
+                } else {
+                    SiteSetting::set($key, $value, $meta['type'], $meta['description']);
+                }
+                $hasChanges = true;
+            }
+        }
+
+        if ($request->exists('smtp_port')) {
+            $portValue = $request->input('smtp_port');
+            if ($portValue === null || $portValue === '') {
+                SiteSetting::where('key', 'smtp_port')->delete();
+            } else {
+                SiteSetting::set('smtp_port', (string) $portValue, 'number', 'Porta SMTP');
+            }
+            $hasChanges = true;
+        }
+
+        if ($request->exists('smtp_password')) {
+            $passwordValue = $request->input('smtp_password', '');
+            if ($passwordValue === '') {
+                SiteSetting::where('key', 'smtp_password')->delete();
+            } else {
+                SiteSetting::set('smtp_password', $passwordValue, 'credential', 'Senha SMTP');
+            }
+            $hasChanges = true;
+        }
+
+        if ($hasChanges) {
+            $message = 'Parâmetros SMTP atualizados com sucesso!';
+        }
+
+        return redirect()->route('admin.parameters')->with('success', $message);
+    }
+
+    public function smtpTest(Request $request)
+    {
+        $request->validate([
+            'test_email' => 'required|email',
+        ]);
+
+        $mailerConfig = config('mail.mailers.smtp', []);
+
+        $host = SiteSetting::get('smtp_host') ?? ($mailerConfig['host'] ?? null);
+        $port = SiteSetting::get('smtp_port') ?? ($mailerConfig['port'] ?? null);
+        $username = SiteSetting::get('smtp_username');
+        $password = SiteSetting::get('smtp_password');
+        $encryption = SiteSetting::get('smtp_encryption');
+        $fromAddress = SiteSetting::get('smtp_from_address') ?? config('mail.from.address');
+        $fromName = SiteSetting::get('smtp_from_name') ?? config('mail.from.name');
+
+        if ($username === null && isset($mailerConfig['username'])) {
+            $username = $mailerConfig['username'];
+        }
+        if ($password === null && isset($mailerConfig['password'])) {
+            $password = $mailerConfig['password'];
+        }
+        if ($encryption === null || $encryption === '') {
+            $encryption = $mailerConfig['encryption'] ?? null;
+        }
+        if ($encryption === 'none') {
+            $encryption = null;
+        }
+
+        if (empty($host) || empty($port)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Configure host e porta SMTP antes de realizar o teste.',
+            ], 422);
+        }
+
+        try {
+            config([
+                'mail.default' => 'smtp',
+                'mail.mailers.smtp.host' => $host,
+                'mail.mailers.smtp.port' => (int) $port,
+                'mail.mailers.smtp.encryption' => $encryption,
+                'mail.mailers.smtp.username' => $username,
+                'mail.mailers.smtp.password' => $password,
+                'mail.from.address' => $fromAddress,
+                'mail.from.name' => $fromName,
+            ]);
+
+            $now = now()->format('d/m/Y H:i:s');
+            Mail::mailer('smtp')->raw("Teste de SMTP realizado com sucesso em {$now}.", function ($message) use ($request, $fromName) {
+                $message->to($request->input('test_email'))
+                    ->subject('Teste de SMTP - ' . ($fromName ?: config('app.name')));
+            });
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Teste enviado com sucesso! Verifique a caixa de entrada informada.',
+            ]);
+        } catch (\Throwable $e) {
+            report($e);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Falha ao enviar e-mail de teste: ' . $e->getMessage(),
+            ], 500);
+        }
     }
 
     // Event Schedule Methods

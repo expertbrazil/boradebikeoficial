@@ -66,6 +66,11 @@
                     <i class="fas fa-cog mr-3"></i>
                     Configurações
                 </a>
+
+                <a href="{{ route('admin.parameters') }}" class="flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100 {{ request()->routeIs('admin.parameters*') ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-700' : '' }}">
+                    <i class="fas fa-sliders-h mr-3"></i>
+                    Parâmetros
+                </a>
             </nav>
             
             <div class="absolute bottom-0 w-64 p-6">

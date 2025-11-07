@@ -132,7 +132,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Evento</label>
-                    <p class="text-gray-900">{{ $registration->event->name ?? 'N/A' }}</p>
+                    <p class="text-gray-900">{{ optional($registration->event)->title ?? 'N/A' }}</p>
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Status do Kit</label>
@@ -316,7 +316,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Evento</label>
-                    <p class="text-gray-900">{{ $registration->event->name ?? 'N/A' }}</p>
+                    <p class="text-gray-900">{{ optional($registration->event)->title ?? 'N/A' }}</p>
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Status do Kit</label>

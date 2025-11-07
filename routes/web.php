@@ -52,6 +52,11 @@ Route::prefix('admin')->middleware(['auth'])->name('admin.')->group(function () 
     // Settings
     Route::get('/settings', [App\Http\Controllers\AdminController::class, 'settings'])->name('settings');
     Route::post('/settings', [App\Http\Controllers\AdminController::class, 'settingsUpdate'])->name('settings.update');
+
+    // Parameters
+    Route::get('/parameters', [App\Http\Controllers\AdminController::class, 'parameters'])->name('parameters');
+    Route::post('/parameters', [App\Http\Controllers\AdminController::class, 'parametersUpdate'])->name('parameters.update');
+    Route::post('/parameters/smtp/test', [App\Http\Controllers\AdminController::class, 'smtpTest'])->name('parameters.smtp.test');
     
     // Schedule
     Route::get('/schedule', [App\Http\Controllers\AdminController::class, 'schedule'])->name('schedule');
