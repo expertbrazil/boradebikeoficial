@@ -148,7 +148,7 @@
         </div>
         
         <!-- Main Content -->
-        <div class="flex-1 flex flex-col md:ml-64">
+        <div class="flex-1 flex flex-col">
             <!-- Header -->
             <header class="bg-white shadow-sm border-b">
                 <div class="px-6 py-4">
