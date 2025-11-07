@@ -80,14 +80,21 @@
                 </a>
                 @endcan
 
-                @can('view-events')
+                @can('assign-roles')
+                <a href="{{ route('admin.roles.index') }}" class="flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100 {{ request()->routeIs('admin.roles*') ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-700' : '' }}">
+                    <i class="fas fa-user-shield mr-3"></i>
+                    Papéis
+                </a>
+                @endcan
+
+                @can('view-settings')
                 <a href="{{ route('admin.settings') }}" class="flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100 {{ request()->routeIs('admin.settings*') ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-700' : '' }}">
                     <i class="fas fa-cog mr-3"></i>
                     Configurações
                 </a>
                 @endcan
 
-                @can('view-users')
+                @can('view-parameters')
                 <a href="{{ route('admin.parameters') }}" class="flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100 {{ request()->routeIs('admin.parameters*') ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-700' : '' }}">
                     <i class="fas fa-sliders-h mr-3"></i>
                     Parâmetros

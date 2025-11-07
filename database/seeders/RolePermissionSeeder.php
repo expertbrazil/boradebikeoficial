@@ -55,17 +55,24 @@ class RolePermissionSeeder extends Seeder
             // WhatsApp permissions
             'view-whatsapp',
             'manage-whatsapp',
+
+            // Settings & Parameters
+            'view-settings',
+            'view-parameters',
         ];
 
         foreach ($permissions as $permission) {
-            Permission::firstOrCreate(['name' => $permission]);
+            Permission::firstOrCreate([
+                'name' => $permission,
+                'guard_name' => 'web',
+            ]);
         }
 
         // Create roles and assign permissions
-        $adminRole = Role::firstOrCreate(['name' => 'Admin']);
+        $adminRole = Role::firstOrCreate(['name' => 'Admin'], ['guard_name' => 'web']);
         $adminRole->syncPermissions(Permission::all());
 
-        $editorRole = Role::firstOrCreate(['name' => 'Editor']);
+        $editorRole = Role::firstOrCreate(['name' => 'Editor'], ['guard_name' => 'web']);
         $editorRole->syncPermissions([
             'view-events',
             'create-events',
@@ -82,15 +89,19 @@ class RolePermissionSeeder extends Seeder
             'edit-partners',
             'view-whatsapp',
             'manage-whatsapp',
+            'view-settings',
+            'view-parameters',
         ]);
 
-        $viewerRole = Role::firstOrCreate(['name' => 'Visualizador']);
+        $viewerRole = Role::firstOrCreate(['name' => 'Visualizador'], ['guard_name' => 'web']);
         $viewerRole->syncPermissions([
             'view-events',
             'view-registrations',
             'view-gallery',
             'view-partners',
             'view-whatsapp',
+            'view-settings',
+            'view-parameters',
         ]);
 
         // Create admin user

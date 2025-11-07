@@ -557,12 +557,16 @@ class AdminController extends Controller
 
     public function settings()
     {
+        abort_unless(auth()->user()->can('view-settings'), 403);
+
         $settings = SiteSetting::orderBy('key')->get();
         return view('admin.settings.index', compact('settings'));
     }
 
     public function settingsUpdate(Request $request)
     {
+        abort_unless(auth()->user()->can('view-settings'), 403);
+
         $request->validate([
             'hero_video' => 'nullable|file|mimes:mp4,webm,ogg|max:102400', // 100MB max
             'select_existing_video' => 'nullable|string',
@@ -739,11 +743,15 @@ class AdminController extends Controller
 
     public function parameters()
     {
+        abort_unless(auth()->user()->can('view-parameters'), 403);
+
         return view('admin.parameters.index');
     }
 
     public function parametersUpdate(Request $request)
     {
+        abort_unless(auth()->user()->can('view-parameters'), 403);
+
         $request->validate([
             'smtp_host' => 'nullable|string|max:255',
             'smtp_port' => 'nullable|integer|min:1|max:65535',
@@ -806,6 +814,8 @@ class AdminController extends Controller
 
     public function smtpTest(Request $request)
     {
+        abort_unless(auth()->user()->can('view-parameters'), 403);
+
         $request->validate([
             'test_email' => 'required|email',
         ]);
