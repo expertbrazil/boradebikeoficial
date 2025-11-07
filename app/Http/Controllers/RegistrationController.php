@@ -12,7 +12,6 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
-use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class RegistrationController extends Controller
 {
@@ -116,13 +115,6 @@ class RegistrationController extends Controller
             ]);
 
             $voucherNumber = sprintf('BB-%06d', $registration->id);
-            $qrCodeImage = 'data:image/png;base64,' . base64_encode(
-                QrCode::format('png')
-                    ->size(320)
-                    ->errorCorrection('H')
-                    ->margin(2)
-                    ->generate($voucherNumber)
-            );
 
             $siteLogoSetting = SiteSetting::get('site_logo');
             $siteLogoDataUri = null;
@@ -142,7 +134,6 @@ class RegistrationController extends Controller
                     'hasKit' => $hasKit,
                     'remainingKits' => $hasKit ? $remainingKits - 1 : $remainingKits,
                     'voucherNumber' => $voucherNumber,
-                    'qrCodeImage' => $qrCodeImage,
                     'siteLogoDataUri' => $siteLogoDataUri,
                     'appName' => config('app.name', 'Bora de Bike'),
                 ], function ($message) use ($registration, $event) {

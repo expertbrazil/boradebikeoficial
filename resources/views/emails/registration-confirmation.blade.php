@@ -64,15 +64,12 @@
                                 </tr>
                             </table>
 
-                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 28px 0;border:1px dashed #94a3b8;border-radius:12px;padding:22px;background-color:#f1f5f9;">
+                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 28px 0;border:1px dashed #94a3b8;border-radius:12px;padding:24px;background-color:#f1f5f9;text-align:center;">
                                 <tr>
-                                    <td style="width:180px;vertical-align:top;padding-right:16px;">
-                                        <img src="{{ $qrCodeImage }}" alt="QR Code da inscrição {{ $voucherNumber }}" style="width:160px;height:160px;display:block;">
-                                    </td>
-                                    <td style="vertical-align:top;">
-                                        <h3 style="margin:0 0 10px 0;font-size:18px;color:#1e293b;">Apresente no credenciamento</h3>
-                                        <p style="margin:0 0 10px 0;font-size:14px;color:#334155;line-height:1.6;">Este QR Code contém o número da sua inscrição. Mostre para a equipe de recepção para validar sua participação.</p>
-                                        <span style="display:inline-block;padding:6px 12px;border-radius:999px;background-color:#dbeafe;color:#1d4ed8;font-size:13px;font-weight:600;letter-spacing:0.04em;">Número da inscrição: {{ $voucherNumber }}</span>
+                                    <td>
+                                        <h3 style="margin:0 0 10px 0;font-size:18px;color:#1e293b;">Número da sua inscrição</h3>
+                                        <p style="margin:0 0 16px 0;font-size:14px;color:#334155;line-height:1.6;">Guarde este código e apresente no credenciamento para validar sua participação.</p>
+                                        <span style="display:inline-block;padding:10px 18px;border-radius:999px;background-color:#1d4ed8;color:#ffffff;font-size:18px;font-weight:700;letter-spacing:0.12em;">{{ $voucherNumber }}</span>
                                     </td>
                                 </tr>
                             </table>
