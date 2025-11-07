@@ -51,18 +51,22 @@ class RolePermissionSeeder extends Seeder
             'edit-users',
             'delete-users',
             'assign-roles',
+
+            // WhatsApp permissions
+            'view-whatsapp',
+            'manage-whatsapp',
         ];
 
         foreach ($permissions as $permission) {
-            Permission::create(['name' => $permission]);
+            Permission::firstOrCreate(['name' => $permission]);
         }
 
         // Create roles and assign permissions
-        $adminRole = Role::create(['name' => 'Admin']);
-        $adminRole->givePermissionTo(Permission::all());
+        $adminRole = Role::firstOrCreate(['name' => 'Admin']);
+        $adminRole->syncPermissions(Permission::all());
 
-        $editorRole = Role::create(['name' => 'Editor']);
-        $editorRole->givePermissionTo([
+        $editorRole = Role::firstOrCreate(['name' => 'Editor']);
+        $editorRole->syncPermissions([
             'view-events',
             'create-events',
             'edit-events',
@@ -76,22 +80,24 @@ class RolePermissionSeeder extends Seeder
             'view-partners',
             'create-partners',
             'edit-partners',
+            'view-whatsapp',
+            'manage-whatsapp',
         ]);
 
-        $viewerRole = Role::create(['name' => 'Visualizador']);
-        $viewerRole->givePermissionTo([
+        $viewerRole = Role::firstOrCreate(['name' => 'Visualizador']);
+        $viewerRole->syncPermissions([
             'view-events',
             'view-registrations',
             'view-gallery',
             'view-partners',
+            'view-whatsapp',
         ]);
 
         // Create admin user
-        $admin = User::create([
-            'name' => 'Administrador',
-            'email' => 'admin@boradebike.com',
-            'password' => bcrypt('password'),
-        ]);
-        $admin->assignRole('Admin');
+        $admin = User::firstOrCreate(
+            ['email' => 'admin@boradebike.com'],
+            ['name' => 'Administrador', 'password' => bcrypt('password')]
+        );
+        $admin->syncRoles(['Admin']);
     }
 }

@@ -30,52 +30,69 @@
                     <i class="fas fa-tachometer-alt mr-3"></i>
                     Dashboard
                 </a>
-                
-                
+
+                @can('view-registrations')
                 <a href="{{ route('admin.registrations') }}" class="flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100 {{ request()->routeIs('admin.registrations*') ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-700' : '' }}">
                     <i class="fas fa-users mr-3"></i>
                     Inscrições
                 </a>
+                @endcan
 
+                @can('view-registrations')
                 <a href="{{ route('admin.kits.index') }}" class="flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100 {{ request()->routeIs('admin.kits*') ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-700' : '' }}">
                     <i class="fas fa-box-open mr-3"></i>
                     Entrega de Kits
                 </a>
-                
+                @endcan
+
+                @can('view-gallery')
                 <a href="{{ route('admin.gallery') }}" class="flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100 {{ request()->routeIs('admin.gallery*') ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-700' : '' }}">
                     <i class="fas fa-images mr-3"></i>
                     Galeria
                 </a>
-                
+                @endcan
+
+                @can('view-partners')
                 <a href="{{ route('admin.partners') }}" class="flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100 {{ request()->routeIs('admin.partners*') ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-700' : '' }}">
                     <i class="fas fa-handshake mr-3"></i>
                     Parceiros
                 </a>
-                
+                @endcan
+
+                @can('view-events')
                 <a href="{{ route('admin.schedule') }}" class="flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100 {{ request()->routeIs('admin.schedule*') ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-700' : '' }}">
                     <i class="fas fa-clock mr-3"></i>
                     Programação
                 </a>
+                @endcan
 
+                @can('view-whatsapp')
                 <a href="{{ route('admin.whatsapp.index') }}" class="flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100 {{ request()->routeIs('admin.whatsapp*') ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-700' : '' }}">
                     <i class="fab fa-whatsapp mr-3"></i>
                     Grupos WhatsApp
                 </a>
-                
+                @endcan
+
+                @can('view-users')
                 <a href="{{ route('admin.users') }}" class="flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100 {{ request()->routeIs('admin.users*') ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-700' : '' }}">
                     <i class="fas fa-user-cog mr-3"></i>
                     Usuários
                 </a>
-                
+                @endcan
+
+                @can('view-events')
                 <a href="{{ route('admin.settings') }}" class="flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100 {{ request()->routeIs('admin.settings*') ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-700' : '' }}">
                     <i class="fas fa-cog mr-3"></i>
                     Configurações
                 </a>
+                @endcan
 
+                @can('view-users')
                 <a href="{{ route('admin.parameters') }}" class="flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100 {{ request()->routeIs('admin.parameters*') ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-700' : '' }}">
                     <i class="fas fa-sliders-h mr-3"></i>
                     Parâmetros
                 </a>
+                @endcan
             </nav>
             
             <div class="absolute bottom-0 w-64 p-6">

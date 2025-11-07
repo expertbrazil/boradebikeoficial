@@ -16,6 +16,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
+use Spatie\Permission\Models\Role;
 
 class AdminController extends Controller
 {
@@ -421,10 +423,136 @@ class AdminController extends Controller
         return redirect()->route('admin.partners')->with('success', 'Parceiro excluído com sucesso!');
     }
 
-    public function users()
+    public function users(Request $request)
     {
-        $users = User::with('roles')->paginate(10);
-        return view('admin.users.index', compact('users'));
+        abort_unless(auth()->user()->can('view-users'), 403);
+
+        $users = User::with('roles')
+            ->when($request->filled('search'), function ($query) use ($request) {
+                $search = trim($request->input('search'));
+                $query->where(function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                        ->orWhere('email', 'like', "%{$search}%");
+                });
+            })
+            ->orderByDesc('is_active')
+            ->orderBy('name')
+            ->paginate(12)
+            ->appends($request->query());
+
+        return view('admin.users.index', [
+            'users' => $users,
+            'search' => $request->input('search', ''),
+        ]);
+    }
+
+    public function usersCreate()
+    {
+        abort_unless(auth()->user()->can('create-users'), 403);
+
+        $roles = Role::orderBy('name')->pluck('name');
+        return view('admin.users.create', compact('roles'));
+    }
+
+    public function usersStore(Request $request)
+    {
+        abort_unless(auth()->user()->can('create-users'), 403);
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255|unique:users,email',
+            'password' => 'required|string|min:8|confirmed',
+            'roles' => 'nullable|array',
+            'roles.*' => 'exists:roles,name',
+            'is_active' => 'nullable|boolean',
+        ]);
+
+        $user = User::create([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'password' => $validated['password'],
+            'is_active' => $request->boolean('is_active', true),
+        ]);
+
+        $user->syncRoles($request->input('roles', []));
+
+        return redirect()->route('admin.users')->with('success', 'Usuário criado com sucesso!');
+    }
+
+    public function usersEdit(User $user)
+    {
+        abort_unless(auth()->user()->can('edit-users'), 403);
+
+        $roles = Role::orderBy('name')->pluck('name');
+        $userRoles = $user->roles->pluck('name')->toArray();
+
+        return view('admin.users.edit', compact('user', 'roles', 'userRoles'));
+    }
+
+    public function usersUpdate(Request $request, User $user)
+    {
+        abort_unless(auth()->user()->can('edit-users'), 403);
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => [
+                'required',
+                'email',
+                'max:255',
+                Rule::unique('users')->ignore($user->id),
+            ],
+            'password' => 'nullable|string|min:8|confirmed',
+            'roles' => 'nullable|array',
+            'roles.*' => 'exists:roles,name',
+            'is_active' => 'nullable|in:0,1,true,false',
+        ]);
+
+        $user->name = $validated['name'];
+        $user->email = $validated['email'];
+
+        if (!empty($validated['password'])) {
+            $user->password = $validated['password'];
+        }
+
+        if ($request->has('is_active')) {
+            $user->is_active = $request->boolean('is_active');
+        }
+
+        $user->save();
+
+        $user->syncRoles($request->input('roles', []));
+
+        return redirect()->route('admin.users')->with('success', 'Usuário atualizado com sucesso!');
+    }
+
+    public function usersDestroy(User $user)
+    {
+        abort_unless(auth()->user()->can('delete-users'), 403);
+
+        if (auth()->id() === $user->id) {
+            return redirect()->route('admin.users')->with('error', 'Você não pode excluir o próprio usuário autenticado.');
+        }
+
+        $user->delete();
+
+        return redirect()->route('admin.users')->with('success', 'Usuário removido com sucesso!');
+    }
+
+    public function usersToggleStatus(Request $request, User $user)
+    {
+        abort_unless(auth()->user()->can('edit-users'), 403);
+
+        if (auth()->id() === $user->id) {
+            return redirect()->route('admin.users')->with('error', 'Você não pode inativar o próprio usuário.');
+        }
+
+        $user->is_active = ! $user->is_active;
+        $user->save();
+
+        $statusMessage = $user->is_active ? 'ativado' : 'inativado';
+
+        return redirect()->route('admin.users', $request->only('search'))
+            ->with('success', "Usuário {$statusMessage} com sucesso!");
     }
 
     public function settings()
