@@ -71,7 +71,12 @@ class RoleController extends Controller
             ->unique()
             ->values();
 
-        $role->syncPermissions($permissionsToKeep->merge($selectedPermissions));
+        $allPermissions = $permissionsToKeep
+            ->merge($selectedPermissions)
+            ->unique()
+            ->map(fn ($permission) => Permission::findOrCreate($permission, 'web'));
+
+        $role->syncPermissions($allPermissions);
 
         return redirect()
             ->route('admin.roles.index')
