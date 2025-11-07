@@ -3,255 +3,112 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Confirmação de Inscrição - Bora de Bike</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 30px;
-            text-align: center;
-            border-radius: 10px 10px 0 0;
-        }
-        .content {
-            background: #f9f9f9;
-            padding: 30px;
-            border-radius: 0 0 10px 10px;
-        }
-        .event-info {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            margin: 20px 0;
-            border-left: 4px solid #667eea;
-        }
-        .participant-info {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            margin: 20px 0;
-        }
-        .kit-info {
-            background: #e3f2fd;
-            padding: 20px;
-            border-radius: 8px;
-            margin: 20px 0;
-            border-left: 4px solid #2196f3;
-        }
-        .footer {
-            text-align: center;
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid #ddd;
-            color: #666;
-        }
-        .highlight {
-            color: #667eea;
-            font-weight: bold;
-        }
-    </style>
+    <title>Voucher de Inscrição - {{ $appName }}</title>
 </head>
-<body>
-    <div class="header">
-        <h1>BORA BIKE</h1>
-        <h2>Luzes de Natal</h2>
-        <p>Confirmação de Inscrição</p>
-    </div>
-    
-    <div class="content">
-        <p>Olá <strong>{{ $registration->full_name }}</strong>,</p>
-        
-        <p>Sua inscrição no evento <strong>Bora de Bike - Luzes de Natal</strong> foi confirmada com sucesso!</p>
-        
-        <div class="event-info">
-            <h3>Informações do Evento</h3>
-            <p><strong>Data:</strong> {{ $event->event_date->format('d/m/Y') }}</p>
-            <p><strong>Horário:</strong> {{ $event->start_time->format('H:i') }} às {{ $event->end_time->format('H:i') }}</p>
-            <p><strong>Local:</strong> {{ $event->location }}</p>
-            <p><strong>Cidade:</strong> {{ $event->city }} - {{ $event->state }}</p>
-        </div>
-        
-        <div class="participant-info">
-            <h3>Seus Dados</h3>
-            <p><strong>Nome:</strong> {{ $registration->full_name }}</p>
-            <p><strong>CPF:</strong> {{ $registration->formatted_cpf }}</p>
-            <p><strong>E-mail:</strong> {{ $registration->email }}</p>
-            <p><strong>Telefone:</strong> {{ $registration->phone }}</p>
-            <p><strong>Tamanho da Camiseta:</strong> {{ $registration->shirt_size }}</p>
-        </div>
-        
-        @if($registration->has_kit)
-        <div class="kit-info">
-            <h3>🎉 Parabéns! Você garantiu seu kit exclusivo!</h3>
-            <p>Você está entre os primeiros inscritos e receberá:</p>
-            <ul>
-                <li>Camiseta exclusiva do evento</li>
-                <li>Mochila esportiva</li>
-                <li>Garrafa térmica</li>
-            </ul>
-            <p><strong>O kit será entregue no dia do evento durante o credenciamento.</strong></p>
-        </div>
-        @else
-        <div class="kit-info">
-            <h3>Kit Esgotado</h3>
-            <p>Infelizmente, os kits exclusivos já foram esgotados. Mas você ainda pode participar do evento e aproveitar toda a experiência!</p>
-        </div>
-        @endif
-        
-        <div class="event-info">
-            <h3>Próximos Passos</h3>
-            <p>1. <strong>Credenciamento:</strong> Chegue com 30 minutos de antecedência</p>
-            <p>2. <strong>Documentos:</strong> Leve um documento com foto</p>
-            <p>3. <strong>Equipamentos:</strong> Capacete é obrigatório</p>
-            <p>4. <strong>Hidratação:</strong> Leve água para o percurso</p>
-        </div>
-        
-        <p>Qualquer dúvida, entre em contato conosco através do e-mail <span class="highlight">contato@boradebike.com</span> ou pelo telefone <span class="highlight">(22) 99999-9999</span>.</p>
-        
-        <p>Nos vemos no evento!</p>
-        
-        <p><strong>Equipe Bora de Bike</strong></p>
-    </div>
-    
-    <div class="footer">
-        <p>Este é um e-mail automático, por favor não responda.</p>
-        <p>&copy; {{ date('Y') }} Bora de Bike. Todos os direitos reservados.</p>
-    </div>
-</body>
-</html>
+<body style="margin:0;padding:0;background-color:#f1f5f9;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;color:#0f172a;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#f1f5f9;padding:24px 16px;">
+        <tr>
+            <td align="center">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:640px;background-color:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 15px 35px rgba(15,23,42,0.15);">
+                    <tr>
+                        <td style="padding:0;">
+                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:linear-gradient(135deg,#1e40af,#3b82f6);color:#ffffff;">
+                                <tr>
+                                    <td style="padding:28px 32px;">
+                                        <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                                            <tr>
+                                                <td valign="middle" style="text-align:left;">
+                                                    @if($siteLogoDataUri)
+                                                        <img src="{{ $siteLogoDataUri }}" alt="Logo {{ $appName }}" style="max-height:56px;display:block;">
+                                                    @else
+                                                        <span style="font-size:24px;font-weight:700;letter-spacing:0.05em;display:block;">{{ $appName }}</span>
+                                                    @endif
+                                                </td>
+                                                <td valign="middle" style="text-align:right;">
+                                                    <span style="display:block;font-size:12px;text-transform:uppercase;letter-spacing:0.15em;opacity:0.85;">Voucher de Inscrição</span>
+                                                    <span style="display:block;font-size:22px;font-weight:700;margin-top:6px;">{{ $voucherNumber }}</span>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding:32px 28px;">
+                            <p style="margin:0 0 16px 0;font-size:18px;">Olá <strong>{{ $registration->full_name }}</strong>,</p>
+                            <p style="margin:0 0 24px 0;font-size:15px;line-height:1.6;">Seu cadastro no evento <strong>{{ $event->title }}</strong> foi confirmado. Apresente este voucher no credenciamento para agilizar sua entrada.</p>
 
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Confirmação de Inscrição - Bora de Bike</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 30px;
-            text-align: center;
-            border-radius: 10px 10px 0 0;
-        }
-        .content {
-            background: #f9f9f9;
-            padding: 30px;
-            border-radius: 0 0 10px 10px;
-        }
-        .event-info {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            margin: 20px 0;
-            border-left: 4px solid #667eea;
-        }
-        .participant-info {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            margin: 20px 0;
-        }
-        .kit-info {
-            background: #e3f2fd;
-            padding: 20px;
-            border-radius: 8px;
-            margin: 20px 0;
-            border-left: 4px solid #2196f3;
-        }
-        .footer {
-            text-align: center;
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid #ddd;
-            color: #666;
-        }
-        .highlight {
-            color: #667eea;
-            font-weight: bold;
-        }
-    </style>
-</head>
-<body>
-    <div class="header">
-        <h1>BORA BIKE</h1>
-        <h2>Luzes de Natal</h2>
-        <p>Confirmação de Inscrição</p>
-    </div>
-    
-    <div class="content">
-        <p>Olá <strong>{{ $registration->full_name }}</strong>,</p>
-        
-        <p>Sua inscrição no evento <strong>Bora de Bike - Luzes de Natal</strong> foi confirmada com sucesso!</p>
-        
-        <div class="event-info">
-            <h3>Informações do Evento</h3>
-            <p><strong>Data:</strong> {{ $event->event_date->format('d/m/Y') }}</p>
-            <p><strong>Horário:</strong> {{ $event->start_time->format('H:i') }} às {{ $event->end_time->format('H:i') }}</p>
-            <p><strong>Local:</strong> {{ $event->location }}</p>
-            <p><strong>Cidade:</strong> {{ $event->city }} - {{ $event->state }}</p>
-        </div>
-        
-        <div class="participant-info">
-            <h3>Seus Dados</h3>
-            <p><strong>Nome:</strong> {{ $registration->full_name }}</p>
-            <p><strong>CPF:</strong> {{ $registration->formatted_cpf }}</p>
-            <p><strong>E-mail:</strong> {{ $registration->email }}</p>
-            <p><strong>Telefone:</strong> {{ $registration->phone }}</p>
-            <p><strong>Tamanho da Camiseta:</strong> {{ $registration->shirt_size }}</p>
-        </div>
-        
-        @if($registration->has_kit)
-        <div class="kit-info">
-            <h3>🎉 Parabéns! Você garantiu seu kit exclusivo!</h3>
-            <p>Você está entre os primeiros inscritos e receberá:</p>
-            <ul>
-                <li>Camiseta exclusiva do evento</li>
-                <li>Mochila esportiva</li>
-                <li>Garrafa térmica</li>
-            </ul>
-            <p><strong>O kit será entregue no dia do evento durante o credenciamento.</strong></p>
-        </div>
-        @else
-        <div class="kit-info">
-            <h3>Kit Esgotado</h3>
-            <p>Infelizmente, os kits exclusivos já foram esgotados. Mas você ainda pode participar do evento e aproveitar toda a experiência!</p>
-        </div>
-        @endif
-        
-        <div class="event-info">
-            <h3>Próximos Passos</h3>
-            <p>1. <strong>Credenciamento:</strong> Chegue com 30 minutos de antecedência</p>
-            <p>2. <strong>Documentos:</strong> Leve um documento com foto</p>
-            <p>3. <strong>Equipamentos:</strong> Capacete é obrigatório</p>
-            <p>4. <strong>Hidratação:</strong> Leve água para o percurso</p>
-        </div>
-        
-        <p>Qualquer dúvida, entre em contato conosco através do e-mail <span class="highlight">contato@boradebike.com</span> ou pelo telefone <span class="highlight">(22) 99999-9999</span>.</p>
-        
-        <p>Nos vemos no evento!</p>
-        
-        <p><strong>Equipe Bora de Bike</strong></p>
-    </div>
-    
-    <div class="footer">
-        <p>Este é um e-mail automático, por favor não responda.</p>
-        <p>&copy; {{ date('Y') }} Bora de Bike. Todos os direitos reservados.</p>
-    </div>
+                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 28px 0;">
+                                <tr>
+                                    <td style="width:50%;vertical-align:top;padding-right:8px;">
+                                        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#f8fafc;border-radius:12px;padding:18px;border:1px solid #e2e8f0;">
+                                            <tr><td style="font-size:15px;letter-spacing:0.05em;text-transform:uppercase;color:#1d4ed8;font-weight:600;padding-bottom:8px;">Informações do Evento</td></tr>
+                                            <tr><td style="font-size:14px;padding:4px 0;line-height:1.5;"><strong>Data:</strong> {{ optional($event->event_date)->format('d/m/Y') }}</td></tr>
+                                            <tr><td style="font-size:14px;padding:4px 0;line-height:1.5;"><strong>Horário:</strong> {{ optional($event->start_time)->format('H:i') }} às {{ optional($event->end_time)->format('H:i') }}</td></tr>
+                                            <tr><td style="font-size:14px;padding:4px 0;line-height:1.5;"><strong>Local:</strong> {{ $event->location }}</td></tr>
+                                            <tr><td style="font-size:14px;padding:4px 0;line-height:1.5;"><strong>Cidade:</strong> {{ $event->city }} - {{ $event->state }}</td></tr>
+                                        </table>
+                                    </td>
+                                    <td style="width:50%;vertical-align:top;padding-left:8px;">
+                                        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#f8fafc;border-radius:12px;padding:18px;border:1px solid #e2e8f0;">
+                                            <tr><td style="font-size:15px;letter-spacing:0.05em;text-transform:uppercase;color:#1d4ed8;font-weight:600;padding-bottom:8px;">Dados do Inscrito</td></tr>
+                                            <tr><td style="font-size:14px;padding:4px 0;line-height:1.5;"><strong>Nome:</strong> {{ $registration->full_name }}</td></tr>
+                                            <tr><td style="font-size:14px;padding:4px 0;line-height:1.5;"><strong>CPF:</strong> {{ $registration->formatted_cpf }}</td></tr>
+                                            <tr><td style="font-size:14px;padding:4px 0;line-height:1.5;"><strong>E-mail:</strong> {{ $registration->email }}</td></tr>
+                                            <tr><td style="font-size:14px;padding:4px 0;line-height:1.5;"><strong>Telefone:</strong> {{ $registration->phone }}</td></tr>
+                                            <tr><td style="font-size:14px;padding:4px 0;line-height:1.5;"><strong>Tamanho da camiseta:</strong> {{ $registration->shirt_size }}</td></tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 28px 0;border:1px dashed #94a3b8;border-radius:12px;padding:22px;background-color:#f1f5f9;">
+                                <tr>
+                                    <td style="width:180px;vertical-align:top;padding-right:16px;">
+                                        <img src="{{ $qrCodeImage }}" alt="QR Code da inscrição {{ $voucherNumber }}" style="width:160px;height:160px;display:block;">
+                                    </td>
+                                    <td style="vertical-align:top;">
+                                        <h3 style="margin:0 0 10px 0;font-size:18px;color:#1e293b;">Apresente no credenciamento</h3>
+                                        <p style="margin:0 0 10px 0;font-size:14px;color:#334155;line-height:1.6;">Este QR Code contém o número da sua inscrição. Mostre para a equipe de recepção para validar sua participação.</p>
+                                        <span style="display:inline-block;padding:6px 12px;border-radius:999px;background-color:#dbeafe;color:#1d4ed8;font-size:13px;font-weight:600;letter-spacing:0.04em;">Número da inscrição: {{ $voucherNumber }}</span>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 24px 0;background-color:#f8fafc;border-radius:12px;padding:18px;border:1px solid #e2e8f0;">
+                                <tr><td style="font-size:15px;letter-spacing:0.05em;text-transform:uppercase;color:#1d4ed8;font-weight:600;padding-bottom:8px;">Documentos e Recomendações</td></tr>
+                                <tr><td style="font-size:14px;line-height:1.6;padding:6px 0;">• Chegue com pelo menos 30 minutos de antecedência para o credenciamento.</td></tr>
+                                <tr><td style="font-size:14px;line-height:1.6;padding:6px 0;">• Leve documento oficial com foto e este voucher (impresso ou no celular).</td></tr>
+                                <tr><td style="font-size:14px;line-height:1.6;padding:6px 0;">• Utilize capacete e itens de segurança obrigatórios durante o trajeto.</td></tr>
+                                <tr><td style="font-size:14px;line-height:1.6;padding:6px 0;">• Hidrate-se bem e leve sua garrafa de água reutilizável.</td></tr>
+                            </table>
+
+                            @if($registration->has_kit)
+                                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 24px 0;background:linear-gradient(135deg,#16a34a,#22c55e);border-radius:12px;padding:20px;color:#ffffff;">
+                                    <tr><td style="font-size:18px;font-weight:600;padding-bottom:8px;">Kit confirmado</td></tr>
+                                    <tr><td style="font-size:14px;line-height:1.6;">Seu kit está reservado. Retire com a equipe no credenciamento apresentando este voucher.</td></tr>
+                                </table>
+                            @else
+                                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 24px 0;background:linear-gradient(135deg,#ea580c,#f97316);border-radius:12px;padding:20px;color:#ffffff;">
+                                    <tr><td style="font-size:18px;font-weight:600;padding-bottom:8px;">Sem kit incluso</td></tr>
+                                    <tr><td style="font-size:14px;line-height:1.6;">Os kits promocionais estão esgotados. Você continua confirmado para o passeio e poderá aproveitar toda a experiência.</td></tr>
+                                </table>
+                            @endif
+
+                            <p style="margin:0;font-size:14px;line-height:1.6;color:#334155;">Em caso de dúvidas, estamos à disposição pelo e-mail <strong>contato@boradebike.com</strong> ou pelo telefone <strong>(22) 99999-9999</strong>.</p>
+                        </td>
+                    </tr>
+                </table>
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:640px;margin-top:16px;">
+                    <tr>
+                        <td style="text-align:center;font-size:12px;color:#64748b;">Este é um e-mail automático, por favor não responda. {{ date('Y') }} {{ $appName }}. Todos os direitos reservados.</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
 </body>
 </html>
 

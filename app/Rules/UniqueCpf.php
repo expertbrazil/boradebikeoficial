@@ -24,10 +24,3 @@ class UniqueCpf implements ValidationRule
         }
     }
 }
-
-        // Verifica se o CPF (apenas dígitos) já existe no banco
-        if (Registration::where('cpf', $cpfClean)->exists()) {
-            $fail('Este CPF já está cadastrado.');
-        }
-    }
-}

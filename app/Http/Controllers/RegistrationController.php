@@ -11,6 +11,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class RegistrationController extends Controller
 {
@@ -113,14 +115,37 @@ class RegistrationController extends Controller
                 'is_active' => true,
             ]);
 
+            $voucherNumber = sprintf('BB-%06d', $registration->id);
+            $qrCodeImage = 'data:image/png;base64,' . base64_encode(
+                QrCode::format('png')
+                    ->size(320)
+                    ->errorCorrection('H')
+                    ->margin(2)
+                    ->generate($voucherNumber)
+            );
+
+            $siteLogoSetting = SiteSetting::get('site_logo');
+            $siteLogoDataUri = null;
+            if ($siteLogoSetting && Storage::disk('public')->exists($siteLogoSetting)) {
+                $logoPath = Storage::disk('public')->path($siteLogoSetting);
+                $logoMime = mime_content_type($logoPath) ?: 'image/png';
+                $siteLogoDataUri = 'data:' . $logoMime . ';base64,' . base64_encode(file_get_contents($logoPath));
+            }
+
             // Send confirmation email
             try {
                 Mail::send('emails.registration-confirmation', [
                     'registration' => $registration,
-                    'event' => $event
-                ], function ($message) use ($registration) {
+                    'event' => $event,
+                    'hasKit' => $hasKit,
+                    'remainingKits' => $hasKit ? $remainingKits - 1 : $remainingKits,
+                    'voucherNumber' => $voucherNumber,
+                    'qrCodeImage' => $qrCodeImage,
+                    'siteLogoDataUri' => $siteLogoDataUri,
+                    'appName' => config('app.name', 'Bora de Bike'),
+                ], function ($message) use ($registration, $event) {
                     $message->to($registration->email)
-                        ->subject('Confirmação de Inscrição - Bora de Bike');
+                        ->subject('Voucher de Inscrição - ' . $event->title);
                 });
             } catch (\Exception $e) {
                 Log::error('Erro ao enviar email de confirmação: ' . $e->getMessage());
