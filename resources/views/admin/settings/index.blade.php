@@ -107,6 +107,41 @@
                     </div>
                 </div>
 
+                <!-- Limite Global de Kits -->
+                <div class="border rounded-lg p-6">
+                    <h4 class="text-md font-medium text-gray-900 mb-4">
+                        <i class="fas fa-boxes-stacked mr-2 text-indigo-600"></i>
+                        Limite Global de Kits Disponíveis
+                    </h4>
+
+                    @php
+                        $globalKitLimit = App\Models\SiteSetting::get('global_kit_limit');
+                    @endphp
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="global_kit_limit" class="block text-sm font-medium text-gray-700 mb-1">Quantidade máxima de kits</label>
+                            <input type="number" min="0" step="1" id="global_kit_limit" name="global_kit_limit"
+                                   value="{{ old('global_kit_limit', $globalKitLimit) }}"
+                                   placeholder="Ex: 2000"
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                            <p class="mt-1 text-xs text-gray-500">Deixe em branco para usar o limite configurado no evento ativo.</p>
+                            @error('global_kit_limit')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <div class="bg-indigo-50 border border-indigo-100 rounded-lg p-4">
+                            <h5 class="text-sm font-medium text-indigo-900 mb-2">Como funciona?</h5>
+                            <ul class="text-sm text-indigo-800 space-y-1">
+                                <li>• Define um limite máximo global de kits disponíveis.</li>
+                                <li>• O dashboard usa este valor para calcular os kits restantes.</li>
+                                <li>• Se vazio, o sistema usa o limite do evento ativo.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Data de Encerramento das Inscrições -->
                 <div class="border rounded-lg p-6">
                     <h4 class="text-md font-medium text-gray-900 mb-4">

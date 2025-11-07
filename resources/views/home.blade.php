@@ -4,7 +4,7 @@
 
 @section('content')
 <!-- Hero Section -->
-<section id="home" class="relative min-h-screen flex items-center justify-center text-white overflow-hidden">
+<section id="home" class="relative min-h-screen flex items-center justify-center text-white overflow-hidden py-20 md:py-28">
     @if($heroVideo)
         <!-- Video Background -->
         <video autoplay muted loop class="absolute inset-0 w-full h-full object-cover z-0">
@@ -66,7 +66,13 @@
             <div class="bg-white bg-opacity-10 backdrop-blur-lg rounded-lg p-6 text-center">
                 <i class="fas fa-clock text-3xl mb-4"></i>
                 <h4 class="text-lg font-semibold mb-2">Horário</h4>
-                <p class="text-sm">{{ $event->start_time->format('H:i') }} - {{ $event->end_time->format('H:i') }}</p>
+                @if($scheduleStart && $scheduleEnd)
+                    <p class="text-sm">{{ $scheduleStart }} - {{ $scheduleEnd }}</p>
+                @elseif($event)
+                    <p class="text-sm">{{ $event->start_time->format('H:i') }} - {{ $event->end_time->format('H:i') }}</p>
+                @else
+                    <p class="text-sm">Em breve</p>
+                @endif
             </div>
         </div>
         
@@ -83,7 +89,7 @@
             <p class="text-sm mb-4">{{ $event->kit_description }}</p>
             <div class="flex justify-between items-center">
                 <span class="text-sm">Kits restantes:</span>
-                <span id="remaining-kits" class="text-lg font-bold">{{ $event->getRemainingKits() }}</span>
+                <span id="remaining-kits" class="text-lg font-bold">{{ number_format($remainingKits) }}</span>
             </div>
         </div>
     </div>
@@ -785,7 +791,13 @@ function showMapError() {
                         <h4 class="font-semibold text-gray-900 mb-4">Informações Importantes:</h4>
                         <ul class="space-y-2 text-sm text-gray-600">
                             <li>• O evento será realizado em {{ $event->location }} no dia {{ $event->event_date->format('d/m/Y') }}</li>
-                            <li>• O kit será entregue apenas para os primeiros {{ $event->kit_limit }} inscritos</li>
+                            <li>
+                                • @if(!is_null($kitLimit))
+                                    O kit será entregue apenas para os primeiros {{ number_format($kitLimit) }} inscritos
+                                @else
+                                    O kit será entregue apenas para os primeiros inscritos
+                                @endif
+                            </li>
                             <li>• É obrigatório o uso de capacete durante todo o percurso</li>
                             <li>• O participante deve estar em boas condições físicas para participar</li>
                             <li>• Em caso de cancelamento, o reembolso será feito conforme política do evento</li>

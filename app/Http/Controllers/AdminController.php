@@ -12,6 +12,7 @@ use App\Models\EventSchedule;
 use App\Models\WhatsAppGroup;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
@@ -25,13 +26,41 @@ class AdminController extends Controller
 
     public function dashboard()
     {
+        $activeEvent = Event::where('is_active', true)->first();
+        $totalKitsUsed = Registration::where('has_kit', true)->count();
         $stats = [
             'total_registrations' => Registration::count(),
-            'total_kits_used' => Registration::where('has_kit', true)->count(),
-            'remaining_kits' => Event::where('is_active', true)->first()?->getRemainingKits() ?? 0,
+            'total_kits_used' => $totalKitsUsed,
+            'remaining_kits' => $activeEvent?->getRemainingKits() ?? 0,
+            'kit_limit_total' => $activeEvent?->kit_limit,
             'total_gallery_images' => GalleryImage::where('is_active', true)->count(),
             'total_partners' => Partner::where('is_active', true)->count(),
         ];
+
+        $globalKitLimit = SiteSetting::get('global_kit_limit');
+        if ($globalKitLimit !== null && $globalKitLimit !== '') {
+            $globalKitLimit = (int) $globalKitLimit;
+            if ($globalKitLimit >= 0) {
+                $stats['kit_limit_total'] = $globalKitLimit;
+                $stats['remaining_kits'] = max(0, $globalKitLimit - $totalKitsUsed);
+            }
+        }
+
+        $registrationsByState = Registration::select('state', DB::raw('COUNT(*) as total'))
+            ->whereNotNull('state')
+            ->where('state', '!=', '')
+            ->groupBy('state')
+            ->orderByDesc('total')
+            ->take(10)
+            ->get();
+
+        $registrationsByCity = Registration::select('city', 'state', DB::raw('COUNT(*) as total'))
+            ->whereNotNull('city')
+            ->where('city', '!=', '')
+            ->groupBy('city', 'state')
+            ->orderByDesc('total')
+            ->take(10)
+            ->get();
 
         // Aniversariantes do mês (com base em registrations.birth_date)
         $birthdays = Registration::select('full_name', 'birth_date')
@@ -40,7 +69,7 @@ class AdminController extends Controller
             ->take(15)
             ->get();
 
-        return view('admin.dashboard', compact('stats', 'birthdays'));
+        return view('admin.dashboard', compact('stats', 'birthdays', 'registrationsByState', 'registrationsByCity'));
     }
 
 
@@ -349,6 +378,7 @@ class AdminController extends Controller
             'kml_route_file' => 'nullable|file|mimetypes:application/vnd.google-earth.kml+xml,application/vnd.google-earth.kmz,application/xml,application/zip,text/xml|max:10240', // 10MB max
             'delete_kml_file' => 'nullable|string',
             'kml_route_code' => 'nullable|string|max:50000', // Código KML
+            'global_kit_limit' => 'nullable|integer|min:0',
         ]);
 
         $action = '';
@@ -406,6 +436,21 @@ class AdminController extends Controller
             $hasChanges = true;
             $action = 'deadline_updated';
             $message = 'Data de encerramento das inscrições atualizada com sucesso!';
+        }
+        // Limite global de kits disponíveis
+        if ($request->exists('global_kit_limit')) {
+            $kitLimitValue = $request->input('global_kit_limit');
+            if ($kitLimitValue === null || $kitLimitValue === '') {
+                SiteSetting::where('key', 'global_kit_limit')->delete();
+                $hasChanges = true;
+                $action = 'kit_limit_cleared';
+                $message = 'Limite global de kits removido com sucesso!';
+            } else {
+                SiteSetting::set('global_kit_limit', (string) $kitLimitValue, 'number', 'Limite global de kits disponíveis');
+                $hasChanges = true;
+                $action = 'kit_limit_updated';
+                $message = 'Limite global de kits atualizado com sucesso!';
+            }
         }
         // Toggle de habilitação das inscrições
         // O campo hidden envia 'true' ou 'false'; garantir conversão correta e robusta

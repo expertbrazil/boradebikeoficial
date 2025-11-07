@@ -84,8 +84,19 @@ class RegistrationController extends Controller
             ], 404);
         }
 
+        $globalKitLimitSetting = SiteSetting::get('global_kit_limit');
+        $kitLimit = $event->kit_limit;
+        if ($globalKitLimitSetting !== null && $globalKitLimitSetting !== '') {
+            $kitLimit = (int) $globalKitLimitSetting;
+        }
+
         // Check if kits are still available
-        $remainingKits = $event->getRemainingKits();
+        if ($kitLimit !== null) {
+            $totalKitsUsed = Registration::where('has_kit', true)->count();
+            $remainingKits = max(0, $kitLimit - $totalKitsUsed);
+        } else {
+            $remainingKits = $event->getRemainingKits();
+        }
         $hasKit = $remainingKits > 0;
 
         try {
