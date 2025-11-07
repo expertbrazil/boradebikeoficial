@@ -344,7 +344,7 @@ class AdminController extends Controller
             'site_logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:51200', // 50MB max
             'kit_photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:51200', // 50MB max
             'registration_deadline' => 'nullable|date|after:today',
-            'registration_enabled' => 'nullable|boolean',
+            'registration_enabled' => 'nullable|in:true,false,1,0,on,off',
             'kml_route_file' => 'nullable|file|mimetypes:application/vnd.google-earth.kml+xml,application/vnd.google-earth.kmz,application/xml,application/zip,text/xml|max:10240', // 10MB max
             'delete_kml_file' => 'nullable|string',
             'kml_route_code' => 'nullable|string|max:50000', // Código KML

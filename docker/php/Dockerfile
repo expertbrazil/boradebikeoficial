@@ -18,6 +18,9 @@ RUN apt-get update && apt-get install -y \
     libmagickwand-dev \
     && rm -rf /var/lib/apt/lists/*
 
+# Align www-data user/group IDs with host (UID/GID 1000) to avoid permission issues
+RUN usermod -u 1000 www-data && groupmod -g 1000 www-data
+
 # Install Node.js
 RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
     && apt-get install -y nodejs

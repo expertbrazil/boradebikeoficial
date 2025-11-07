@@ -162,7 +162,8 @@
                     </h4>
                     
                     @php
-                        $registrationEnabled = App\Models\SiteSetting::get('registration_enabled', true);
+                        $registrationEnabledValue = App\Models\SiteSetting::get('registration_enabled', 'true');
+                        $registrationEnabled = filter_var($registrationEnabledValue, FILTER_VALIDATE_BOOLEAN);
                     @endphp
                     
                     <div class="flex items-center justify-between">
@@ -446,7 +447,7 @@ document.getElementById('settingsForm').addEventListener('submit', function(e) {
     const checkbox = document.getElementById('registration_enabled_checkbox');
     const hidden = document.getElementById('registration_enabled_hidden');
     if (checkbox && hidden) {
-        hidden.value = checkbox.checked ? '1' : '0';
+        hidden.value = checkbox.checked ? 'true' : 'false';
     }
 });
 </script>
