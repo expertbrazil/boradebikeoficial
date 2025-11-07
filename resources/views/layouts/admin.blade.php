@@ -16,13 +16,37 @@
         [x-cloak] { display: none !important; }
     </style>
 </head>
-<body class="bg-gray-50">
-    <div class="min-h-screen flex">
+<body x-data="{ sidebarOpen: false }" class="bg-gray-50">
+    <div class="min-h-screen md:flex">
+        <div 
+            x-show="sidebarOpen"
+            x-transition.opacity
+            class="fixed inset-0 z-20 bg-black/50 md:hidden"
+            @click="sidebarOpen = false"
+            aria-hidden="true"
+        ></div>
+
         <!-- Sidebar -->
-        <div class="w-64 bg-white shadow-lg">
-            <div class="p-6">
+        <div
+            x-cloak
+            class="fixed inset-y-0 left-0 z-30 flex w-64 flex-col bg-white shadow-lg transform transition-transform duration-200 ease-in-out md:relative md:translate-x-0 md:shadow-md"
+            :class="{
+                '-translate-x-full md:translate-x-0': !sidebarOpen,
+                'translate-x-0': sidebarOpen
+            }"
+        >
+            <div class="flex items-center justify-between p-6 md:block">
                 <h1 class="text-2xl font-bold text-gray-800">Bora de Bike</h1>
                 <p class="text-sm text-gray-600">Painel Administrativo</p>
+                <button
+                    type="button"
+                    class="mt-4 inline-flex items-center rounded-md border border-gray-200 px-3 py-1 text-sm text-gray-600 hover:bg-gray-100 focus:outline-none md:hidden"
+                    @click="sidebarOpen = false"
+                    aria-label="Fechar menu"
+                >
+                    <i class="fas fa-times mr-2"></i>
+                    Fechar
+                </button>
             </div>
             
             <nav class="mt-6">
@@ -102,7 +126,7 @@
                 @endcan
             </nav>
             
-            <div class="absolute bottom-0 w-64 p-6">
+            <div class="mt-auto w-64 p-6">
                 <div class="flex items-center">
                     <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white text-sm font-bold">
                         {{ substr(auth()->user()->name, 0, 1) }}
@@ -124,12 +148,23 @@
         </div>
         
         <!-- Main Content -->
-        <div class="flex-1 flex flex-col">
+        <div class="flex-1 flex flex-col md:ml-64">
             <!-- Header -->
             <header class="bg-white shadow-sm border-b">
                 <div class="px-6 py-4">
                     <div class="flex items-center justify-between">
-                        <h2 class="text-xl font-semibold text-gray-800">@yield('page-title', 'Dashboard')</h2>
+                        <div class="flex items-center space-x-3">
+                            <button
+                                type="button"
+                                class="inline-flex items-center justify-center rounded-md border border-gray-200 p-2 text-gray-600 hover:bg-gray-100 focus:outline-none md:hidden"
+                                @click="sidebarOpen = true"
+                                aria-label="Abrir menu"
+                            >
+                                <i class="fas fa-bars"></i>
+                            </button>
+
+                            <h2 class="text-xl font-semibold text-gray-800">@yield('page-title', 'Dashboard')</h2>
+                        </div>
                         
                         <div class="flex items-center space-x-4">
                             <a href="{{ route('home') }}" target="_blank" class="text-gray-600 hover:text-gray-800">
